@@ -1,8 +1,12 @@
 import sys
 import ezdxf
+from pathlib import Path
+from ezdxf import select
+
+path_to_read_file = Path("C:\\Users\\FV\\Desktop\\python\\dxf-analyzer\\squareCircle.DXF")
 
 try:
-    doc = ezdxf.readfile("D:\\kompas_marco\\dxfAnalyzer\\circleSquareRectangle.DXF")
+    doc = ezdxf.readfile(path_to_read_file)
     print('файл прочитан')
 except IOError:
     print(f"Not a DXF file or a generic I/O error.")
@@ -16,6 +20,8 @@ msp = doc.modelspace()
 # список объектов на 0 слое
 zero_layer_objects = [entity for entity in msp if entity.dxf.layer == '0']
 print('Количество объектов в файле вырезки: ' + str(len(zero_layer_objects)))
+for primitive in zero_layer_objects:
+    print(primitive)
 
 # список окружностей
 list_circe = [obj for obj in zero_layer_objects if obj.dxftype() == 'CIRCLE']
@@ -30,10 +36,17 @@ print("Количество отверстий: " + str(len(list_circe)) )
 # список линий
 list_line = [obj for obj in zero_layer_objects if obj.dxftype() == 'LINE']
 print ('Количество линий: ' + str(len(list_line)))
+print('-----------------------------------------------------------------------')
 
 
 
-# пробуем делать коммиты и пуш
+# координаты левый низ правый верх.bounding boxes
+window = select.Window((-300, -300), (300, 300))
+for entity in select.bbox_inside(window, msp):
+    print(str(entity))
+
+# пробуем делать коммиты и пуш 
+#https://ezdxf.readthedocs.io/en/stable/tutorials/entity_selection.html выбор объекта на основании его положения
 
 
 
